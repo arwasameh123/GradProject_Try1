@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ملخّص الملفات</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@500;700&display=swap');
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      font-family: "Cairo", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: linear-gradient(120deg, #003366, #0066cc, #0099cc, #003366);
+      background-size: 300% 300%;
+      animation: bgMove 10s infinite alternate;
+    }
+
+    @keyframes bgMove {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+
+    .card {
+      position: relative;
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      width: 90%;
+      max-width: 420px;
+      padding: 2rem;
+      text-align: center;
+      color: #fff;
+      animation: slideUp 1s ease;
+      transition: all 0.5s ease;
+    }
+
+    @keyframes slideUp {
+      0% { transform: translateY(50px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    h1, h2 {
+      color: #ffcc00;
+      margin-bottom: 1rem;
+      letter-spacing: 1px;
+    }
+
+    p {
+      margin-bottom: 1.5rem;
+      opacity: 0.9;
+    }
+
+    input, button {
+      width: 100%;
+      margin: 0.5rem 0;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+
+    input {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+    }
+
+    input::placeholder {
+      color: rgba(255,255,255,0.8);
+    }
+
+    input:focus {
+      outline: none;
+      box-shadow: 0 0 10px #ffcc00;
+      background: rgba(255,255,255,0.25);
+    }
+
+    button {
+      background: linear-gradient(135deg, #ffcc00, #ffb700);
+      color: #003366;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255,204,0,0.4);
+    }
+
+    .hidden { display: none; }
+
+    .summary-box {
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: right;
+      color: #fff;
+      margin-top: 1rem;
+      white-space: pre-wrap;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .loading {
+      margin-top: 10px;
+      color: #fff;
+      font-size: 1rem;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    footer {
+      position: fixed;
+      bottom: 10px;
+      color: rgba(255,255,255,0.8);
+      font-size: 0.9rem;
+      text-shadow: 0 0 5px #000;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- صفحة تسجيل الدخول -->
+  <div id="loginPage" class="card">
+    <h1>👋 أهلاً بيك</h1>
+    <p>سجّل الدخول لتبدأ في تلخيص ملفاتك بسهولة وسرعة</p>
+    <input type="email" id="email" placeholder="البريد الإلكتروني" />
+    <input type="password" id="password" placeholder="كلمة المرور" />
+    <button id="loginBtn">تسجيل الدخول</button>
+  </div>
+
+  <!-- الصفحة الرئيسية -->
+  <div id="homePage" class="card hidden">
+    <h2>✨ أداة تلخيص الملفات ✨</h2>
+    <input type="file" id="fileInput" accept=".txt,.pdf,.docx" />
+    <button id="summarizeBtn">ابدأ التلخيص</button>
+
+    <div id="loadingText" class="loading" style="display: none;">جاري التلخيص...</div>
+
+    <div id="summaryContainer" style="display: none;">
+      <div id="summaryText" class="summary-box"></div>
+      <button id="downloadBtn">تحميل الملخّص</button>
+    </div>
+
+    <button id="logoutBtn" style="background:#ff4d4d; color:white; margin-top:15px;">🚪 تسجيل الخروج</button>
+  </div>
+
+  <footer>© 2025 جميع الحقوق محفوظة</footer>
+
+  <script>
+    // تسجيل الدخول
+    const loginPage = document.getElementById("loginPage");
+    const homePage = document.getElementById("homePage");
+    const loginBtn = document.getElementById("loginBtn");
+
+    loginBtn.addEventListener("click", () => {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (email === "admin@example.com" && password === "1234") {
+        loginPage.classList.add("hidden");
+        homePage.classList.remove("hidden");
+      } else {
+        alert("❌ البريد الإلكتروني أو كلمة المرور غير صحيحة");
+      }
+    });
+
+    // تسجيل الخروج
+    const logoutBtn = document.getElementById("logoutBtn");
+    logoutBtn.addEventListener("click", () => {
+      homePage.classList.add("hidden");
+      loginPage.classList.remove("hidden");
+    });
+
+    // التلخيص التجريبي
+    const fileInput = document.getElementById("fileInput");
+    const summarizeBtn = document.getElementById("summarizeBtn");
+    const summaryContainer = document.getElementById("summaryContainer");
+    const summaryText = document.getElementById("summaryText");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const loadingText = document.getElementById("loadingText");
+
+    summarizeBtn.addEventListener("click", () => {
+      const file = fileInput.files[0];
+      if (!file) {
+        alert("📁 من فضلك اختر ملف أولاً!");
+        return;
+      }
+
+      loadingText.style.display = "block";
+      summaryContainer.style.display = "none";
+
+      setTimeout(() => {
+        const fakeSummary = `📄 تم تلخيص الملف "${file.name}" بنجاح.\n\n✨ (هذا نموذج تجريبي - سيتم ربطه لاحقًا بالخادم.)`;
+        summaryText.textContent = fakeSummary;
+        loadingText.style.display = "none";
+        summaryContainer.style.display = "block";
+      }, 2000);
+    });
+
+    downloadBtn.addEventListener("click", () => {
+      const text = summaryText.textContent;
+      const blob = new Blob([text], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "الملخّص.txt";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore VSCode settings
+.vscode/
+
+# Ignore node modules if any
+node_modules/
+
+# Ignore temp files
+*.log
+*.tmp
