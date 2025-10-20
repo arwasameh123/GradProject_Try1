@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مساعد مصلحة الضرائب</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@500;700&display=swap');
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      font-family: "Cairo", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      color: #003366;
+      transition: background 0.5s ease, color 0.5s ease;
+    }
+
+    body.dark {
+      background: linear-gradient(135deg, #002244, #004C6D, #006B4F);
+      color: #fff;
+    }
+
+    header {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      left: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      background: rgba(0, 0, 0, 0.05);
+      padding: 10px 20px;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    body.dark header {
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    header img {
+      height: 65px;
+      width: 65px;
+      border-radius: 8px;
+      background: #fff;
+      padding: 4px;
+      object-fit: contain;
+    }
+
+    header h3 {
+      font-size: 1.2rem;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 420px;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.6s ease;
+      margin-top: 100px;
+    }
+
+    body.dark .card {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .chat-mode {
+      width: 80%;
+      max-width: 900px;
+      height: 70vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: right;
+    }
+
+    input, button, textarea {
+      width: 100%;
+      margin: 0.5rem 0;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: 0.3s;
+      font-family: "Cairo", sans-serif;
+    }
+
+    input, textarea {
+      background: rgba(0,0,0,0.05);
+      color: inherit;
+    }
+
+    body.dark input, 
+    body.dark textarea {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+    }
+
+    button {
+      background: linear-gradient(135deg, #00AEEF, #007A3D);
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,174,239,0.4);
+    }
+
+    body.dark button {
+      background: linear-gradient(135deg, #FFD700, #FF8C00);
+      color: #003366;
+      box-shadow: 0 4px 12px rgba(255,255,255,0.2);
+    }
+
+    .chat-box {
+      flex-grow: 1;
+      overflow-y: auto;
+      background: rgba(0,0,0,0.05);
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 1rem;
+      text-align: right;
+      scroll-behavior: smooth;
+    }
+
+    body.dark .chat-box {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .message {
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin: 5px 0;
+      max-width: 90%;
+      line-height: 1.4;
+      animation: fadeIn 0.4s ease-in;
+    }
+
+    .user {
+      background: #ffcc00;
+      color: #003366;
+      align-self: flex-end;
+    }
+
+    .bot {
+      background: rgba(0,0,0,0.1);
+      color: inherit;
+    }
+
+    body.dark .user {
+      background: #ffe680;
+      color: #003366;
+    }
+
+    body.dark .bot {
+      background: rgba(0,0,0,0.3);
+      color: #fff;
+    }
+
+    #darkModeToggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #ffcc00;
+      color: #003366;
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+    }
+
+    body.dark #darkModeToggle {
+      background: #222;
+      color: #ffcc00;
+    }
+
+    #backBtn {
+      position: fixed;
+      top: 20px;
+      left: 80px;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #007A3D, #00AEEF);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    #backBtn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    }
+
+    body.dark #backBtn {
+      background: linear-gradient(135deg, #FFD700, #FF8C00);
+      color: #003366;
+    }
+
+    #backBtn svg {
+      width: 22px;
+      height: 22px;
+      transform: rotate(180deg);
+    }
+
+    .hidden { display: none; }
+
+    .typing {
+      font-style: italic;
+      color: #888;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+
+<body>
+  <header>
+    <img src="logo.png" alt="شعار مصلحة الضرائب المصرية">
+    <h3>مصلحة الضرائب المصرية - مصلحتك أولاً</h3>
+  </header>
+
+  <button id="darkModeToggle">🌙</button>
+  <button id="backBtn" class="hidden">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+
+  <div id="loginPage" class="card">
+    <h1>👋 أهلاً بيك</h1>
+    <p>سجّل الدخول لتبدأ في استخدام المساعد الذكي</p>
+    <input type="email" id="email" placeholder="البريد الإلكتروني" />
+    <input type="password" id="password" placeholder="كلمة المرور" />
+    <button id="loginBtn">تسجيل الدخول</button>
+  </div>
+
+  <div id="homePage" class="card hidden">
+    <h2>🤖 مساعد مصلحة الضرائب</h2>
+    <p id="welcomeMsg"></p>
+
+    <div id="mainButtons">
+      <button id="askBtn">🗣️ اسألني سؤال</button>
+      <button id="uploadBtn">📁 رفع مستند</button>
+    </div>
+
+    <div id="chatSection" class="hidden">
+      <div id="chatBox" class="chat-box"></div>
+
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <textarea id="userInput" placeholder="اكتب سؤالك هنا..." style="flex:1; resize:none;" rows="1"></textarea>
+        <input type="file" id="fileInput" class="hidden" accept=".pdf,.docx,.txt"/>
+        <button id="sendBtn" style="width:auto;">إرسال</button>
+      </div>
+    </div>
+
+    <button id="logoutBtn" style="margin-top:10px;">🚪 تسجيل الخروج</button>
+  </div>
+
+  <script>
+    const loginPage = document.getElementById("loginPage");
+    const homePage = document.getElementById("homePage");
+    const loginBtn = document.getElementById("loginBtn");
+    const askBtn = document.getElementById("askBtn");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const chatSection = document.getElementById("chatSection");
+    const chatBox = document.getElementById("chatBox");
+    const userInput = document.getElementById("userInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const welcomeMsg = document.getElementById("welcomeMsg");
+    const mainButtons = document.getElementById("mainButtons");
+    const backBtn = document.getElementById("backBtn");
+    const darkModeToggle = document.getElementById("darkModeToggle");
+    const fileInput = document.getElementById("fileInput");
+
+    loginBtn.addEventListener("click", () => {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      if (email === "admin@example.com" && password === "1234") {
+        loginPage.classList.add("hidden");
+        homePage.classList.remove("hidden");
+        welcomeMsg.textContent = `مرحباً ${email.split('@')[0]} 👋! يمكنك سؤالي أو رفع ملف لتحليله.`;
+      } else {
+        alert("❌ البريد الإلكتروني أو كلمة المرور غير صحيحة");
+      }
+    });
+
+    darkModeToggle.addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      darkModeToggle.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
+    });
+
+    askBtn.addEventListener("click", () => {
+      mainButtons.classList.add("hidden");
+      welcomeMsg.classList.add("hidden");
+      chatSection.classList.remove("hidden");
+      backBtn.classList.remove("hidden");
+      homePage.classList.add("chat-mode");
+      chatBox.innerHTML = `<div class="message bot">مرحباً 👋! أنا مساعد مصلحة الضرائب، كيف يمكنني مساعدتك اليوم؟</div>`;
+    });
+
+    uploadBtn.addEventListener("click", () => {
+      mainButtons.classList.add("hidden");
+      welcomeMsg.classList.add("hidden");
+      chatSection.classList.remove("hidden");
+      backBtn.classList.remove("hidden");
+      homePage.classList.add("chat-mode");
+      chatBox.innerHTML = `<div class="message bot">📎 يمكنك رفع ملف الآن وسأقوم بتحليله وإرسال تقرير لك.</div>`;
+      fileInput.click();
+    });
+
+    fileInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const userMsg = document.createElement("div");
+        userMsg.classList.add("message", "user");
+        userMsg.textContent = `📤 تم رفع الملف: ${file.name}`;
+        chatBox.appendChild(userMsg);
+        simulateTyping("✅ تم استلام الملف! جاري معالجته...");
+        setTimeout(() => {
+          const docLink = document.createElement("a");
+          docLink.href = "#";
+          docLink.textContent = "📄 اضغط هنا لتحميل التقرير الناتج";
+          docLink.style.color = "#00AEEF";
+          docLink.download = "tax_report.docx";
+          const botMsg = document.createElement("div");
+          botMsg.classList.add("message", "bot");
+          botMsg.appendChild(docLink);
+          chatBox.appendChild(botMsg);
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }, 2500);
+      }
+    });
+
+    userInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    sendBtn.addEventListener("click", sendMessage);
+
+    function sendMessage() {
+      const text = userInput.value.trim();
+      if (!text) return;
+      const userMsg = document.createElement("div");
+      userMsg.classList.add("message", "user");
+      userMsg.textContent = text;
+      chatBox.appendChild(userMsg);
+      userInput.value = "";
+      simulateTyping("🤖 شكراً لسؤالك! سيتم تنفيذ هذه الميزة قريباً.");
+    }
+
+    function simulateTyping(botReply) {
+      const typing = document.createElement("div");
+      typing.classList.add("message", "bot", "typing");
+      typing.textContent = " يكتب...";
+      chatBox.appendChild(typing);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      setTimeout(() => {
+        typing.remove();
+        const botMsg = document.createElement("div");
+        botMsg.classList.add("message", "bot");
+        botMsg.textContent = botReply;
+        chatBox.appendChild(botMsg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 1500);
+    }
+
+    backBtn.addEventListener("click", () => {
+      chatSection.classList.add("hidden");
+      backBtn.classList.add("hidden");
+      mainButtons.classList.remove("hidden");
+      welcomeMsg.classList.remove("hidden");
+      homePage.classList.remove("chat-mode");
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      homePage.classList.add("hidden");
+      loginPage.classList.remove("hidden");
+    });
+  </script>
+</body>
+</html>
